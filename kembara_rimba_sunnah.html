@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kembara Rimba Sunnah</title>
+<style>
+:root{--forest:#24583b;--leaf:#4d8754;--mint:#e7f2df;--cream:#fffaf0;--wood:#c88b50;--ink:#26392d;--pink:#f5c9c7;--gold:#f5d77d}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#cce8c5,#eef5df 48%,#d7edcf);min-height:100vh}
+.site{max-width:960px;margin:auto;padding:20px}
+.hero{position:relative;overflow:hidden;text-align:center;color:#fff8e7;background:linear-gradient(135deg,#194b34,#36764b 65%,#6c9d55);border:5px solid #b77a43;border-radius:28px;padding:30px 18px;box-shadow:0 8px 0 #9b6338}
+.hero:before,.hero:after{content:"🌿";position:absolute;font-size:60px;opacity:.6}.hero:before{left:12px;top:8px}.hero:after{right:12px;bottom:4px}
+.hero h1{font-size:clamp(2rem,6vw,3.5rem);margin:8px 0;text-shadow:2px 3px #173d2a}.hero p{margin:6px auto;max-width:600px;line-height:1.5}
+.pill{display:inline-block;background:#f5d77d;color:#4b3a1f;padding:7px 14px;border-radius:30px;font-weight:800;margin-top:10px}
+.panel{background:var(--cream);border:3px solid #d5a16a;border-radius:24px;padding:clamp(16px,3vw,28px);margin:22px 0;box-shadow:0 5px 0 #b77a43}
+.intro{text-align:center}.mascot{font-size:3rem}
+button{font:inherit;cursor:pointer;border:0;border-radius:15px;padding:13px 18px;font-weight:800;transition:transform .15s,filter .15s}
+button:hover{filter:brightness(1.04);transform:translateY(-2px)}button:focus-visible{outline:3px solid #234f37;outline-offset:3px}
+.primary{background:var(--forest);color:white;box-shadow:0 4px 0 #173c29}.secondary{background:#e8efdc;color:var(--forest);border:2px solid #9ebc8f}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-weight:800}
+.progress{height:12px;background:#dce8d3;border-radius:20px;overflow:hidden;margin:12px 0 20px}.bar{height:100%;width:0;background:linear-gradient(90deg,#5b9657,#e7bd62);transition:width .3s}
+.question{font-size:clamp(1.2rem,3vw,1.6rem);line-height:1.4;margin:8px 0 18px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.answer{background:#edf4e7;border:2px solid #c8d9bc;color:#294632;text-align:left;min-height:68px;display:flex;align-items:center;gap:12px}
+.answer .letter{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#d1e5c4;font-weight:900}
+.answer.correct{background:#d9f0d5;border-color:#5c9b5a}.answer.wrong{background:#fbe5df;border-color:#d88c78}
+.answer:disabled{cursor:default;transform:none;filter:none}
+.feedback{margin-top:18px;padding:15px;border-radius:16px;line-height:1.5;background:#f1f3e9;border-left:5px solid var(--leaf)}
+.feedback.good{background:#e4f3df;border-color:#43834b}.feedback.bad{background:#fff0e9;border-color:#c77a5e}
+.actions{display:flex;justify-content:flex-end;margin-top:18px}
+.hidden{display:none!important}
+.score{font-size:3.4rem;font-weight:900;color:#a66b2f;margin:4px}
+.result{text-align:center}
+.result .award{font-size:4rem}
+.review{margin-top:16px;text-align:left;background:#f1f5e9;border-radius:16px;padding:15px;line-height:1.55}
+.footer{text-align:center;color:#315b3d;font-weight:800;padding:10px}
+@media(max-width:620px){.site{padding:12px}.answers{grid-template-columns:1fr}.hero{padding:26px 14px}.panel{margin:16px 0}.topline{font-size:.95rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="site">
+  <header class="hero">
+    <div style="font-size:2rem">🌳 🐿️ 🦋 🌳</div>
+    <h1>Kembara Rimba Sunnah</h1>
+    <p>Misi mencari ilmu bersama Rasulullah SAW</p>
+    <span class="pill">Permainan Pendidikan Islam · Tahun 3</span>
+  </header>
+
+  <section id="start" class="panel intro">
+    <div class="mascot">🐰📚</div>
+    <h2>Selamat datang, pengembara!</h2>
+    <p>Terokai hutan ilmu dengan menjawab 8 soalan tentang Sunnah Rasulullah SAW. Pilih satu jawapan yang paling tepat bagi setiap cabaran.</p>
+    <p><strong>Setiap jawapan betul mendapat 1 bintang.</strong></p>
+    <button class="primary" id="startBtn">Mulakan kembara 🌿</button>
+  </section>
+
+  <section id="game" class="panel hidden" aria-live="polite">
+    <div class="topline">
+      <span id="mission">Misi 1 daripada 8</span>
+      <span>⭐ Markah: <b id="score">0</b></span>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div id="feedback" class="feedback hidden" role="status"></div>
+    <div class="actions">
+      <button class="primary hidden" id="nextBtn">Soalan seterusnya →</button>
+    </div>
+  </section>
+
+  <section id="result" class="panel result hidden">
+    <div class="award" id="award">🏆</div>
+    <h2 id="resultTitle">Misi selesai!</h2>
+    <div class="score" id="finalScore">0/8</div>
+    <p id="resultText"></p>
+    <div class="review" id="review"></div>
+    <p><button class="primary" id="againBtn">Main semula ↻</button></p>
+  </section>
+  <footer class="footer">🌱 Ilmu diamalkan, Sunnah dihidupkan! 🌱</footer>
+</main>
+<script>
+const questions = [
+ {q:"Apakah maksud Sunnah Rasulullah SAW?",o:["Segala perkataan, perbuatan, pengakuan dan ketetapan Baginda","Adat masyarakat Arab sahaja","Peraturan yang dibuat oleh manusia","Amalan para sahabat sahaja"],a:0,e:"Sunnah merangkumi perkataan, perbuatan, pengakuan dan ketetapan Rasulullah SAW."},
+ {q:"Surah manakah menyatakan Rasulullah SAW sebagai contoh teladan yang baik?",o:["Surah al-Fatihah ayat 1","Surah al-Ahzab ayat 21","Surah al-Ikhlas ayat 1","Surah al-Falaq ayat 1"],a:1,e:"Surah al-Ahzab ayat 21 menyatakan bahawa Rasulullah SAW ialah contoh teladan yang baik (uswah hasanah)."},
+ {q:"Apakah nama Sunnah yang merujuk kepada perkataan atau ucapan Rasulullah SAW?",o:["Sunnah Fi'liyah","Sunnah Taqririyah","Sunnah Qauliyah","Sunnah Ijtima'iyah"],a:2,e:"Qauliyah ialah Sunnah yang berbentuk perkataan atau ucapan Rasulullah SAW."},
+ {q:"Rasulullah SAW makan menggunakan tangan kanan. Perbuatan ini ialah contoh Sunnah...",o:["Qauliyah","Fi'liyah","Taqririyah","Ijtima'iyah"],a:1,e:"Fi'liyah merujuk kepada perbuatan yang dilakukan oleh Rasulullah SAW."},
+ {q:"Apakah contoh Sunnah Taqririyah?",o:["Rasulullah SAW tersenyum","Rasulullah SAW membaca doa","Baginda membenarkan perbuatan sahabat dan tidak melarangnya","Rasulullah SAW memberi salam"],a:2,e:"Taqririyah ialah pengakuan atau persetujuan Rasulullah SAW terhadap sesuatu perbuatan. Contohnya, Baginda membenarkan sahabat memakan dhab walaupun Baginda sendiri tidak memakannya."},
+ {q:"Yang manakah contoh amalan Sunnah dalam kehidupan harian?",o:["Berkata kasar kepada rakan","Mengejek orang lain","Memberi salam apabila bertemu","Bersikap sombong"],a:2,e:"Memberi salam ialah amalan yang dianjurkan dalam Islam dan mencontohi ajaran Rasulullah SAW."},
+ {q:"Apakah cara yang baik untuk mengamalkan Sunnah?",o:["Mengamalkannya sekali sahaja","Mempelajari Sunnah dan mengamalkannya secara konsisten","Mengamalkannya apabila dilihat orang","Mengabaikan ajaran yang dipelajari"],a:1,e:"Kita perlu mempelajari Sunnah daripada sumber yang betul dan berusaha mengamalkannya secara berterusan."},
+ {q:"Apakah salah satu kepentingan mengamalkan Sunnah?",o:["Mendekatkan diri kepada Allah SWT","Menjadi sombong","Menyakiti orang lain","Menjauhi kebaikan"],a:0,e:"Mengamalkan Sunnah membantu kita mendekatkan diri kepada Allah SWT, mencontohi akhlak Rasulullah SAW dan memperoleh ganjaran pahala."}
+];
+let current=0,score=0,locked=false,answersLog=[];
+const $=id=>document.getElementById(id);
+function start(){current=0;score=0;locked=false;answersLog=[];$("start").classList.add("hidden");$("result").classList.add("hidden");$("game").classList.remove("hidden");render()}
+function render(){
+ locked=false;$("mission").textContent=`Misi ${current+1} daripada ${questions.length}`;$("score").textContent=score;
+ $("bar").style.width=`${(current/questions.length)*100}%`;$("question").textContent=questions[current].q;
+ $("feedback").className="feedback hidden";$("feedback").textContent="";$("nextBtn").classList.add("hidden");
+ const wrap=$("answers");wrap.innerHTML="";
+ questions[current].o.forEach((opt,i)=>{
+  const b=document.createElement("button");b.className="answer";
+  const letter=document.createElement("span");letter.className="letter";letter.textContent=String.fromCharCode(65+i);
+  const label=document.createElement("span");label.textContent=opt;b.append(letter,label);b.addEventListener("click",()=>choose(i,b));wrap.appendChild(b);
+ });
+}
+function choose(i,button){
+ if(locked)return;locked=true;const item=questions[current],ok=i===item.a;if(ok)score++;
+ answersLog.push({q:item.q,chosen:item.o[i],correct:item.o[item.a],ok});
+ [...$("answers").children].forEach((b,j)=>{b.disabled=true;if(j===item.a)b.classList.add("correct");else if(j===i)b.classList.add("wrong")});
+ $("score").textContent=score;$("feedback").textContent=(ok?"🎉 Hebat! Jawapan betul. ":"🌱 Tidak mengapa, teruskan mencuba. ")+item.e;
+ $("feedback").className="feedback "+(ok?"good":"bad");$("nextBtn").textContent=current===questions.length-1?"Lihat keputusan 🏆":"Teruskan misi →";$("nextBtn").classList.remove("hidden");
+}
+function next(){if(!locked)return;if(current<questions.length-1){current++;render()}else finish()}
+function finish(){
+ $("game").classList.add("hidden");$("result").classList.remove("hidden");$("bar").style.width="100%";
+ $("finalScore").textContent=`${score} / ${questions.length}`;
+ let title,msg,award;
+ if(score===8){title="Juara Rimba Sunnah!";msg="Hebat! Semua cabaran berjaya diselesaikan. Teruskan mengamalkan Sunnah Rasulullah SAW!";award="🏆"}
+ else if(score>=6){title="Pengembara Hebat!";msg="Syabas! Pengetahuan tentang Sunnah semakin mantap. Teruskan usaha!";award="🌟"}
+ else if(score>=4){title="Teruskan Kembara!";msg="Usaha yang baik. Ulang kaji nota dan cuba lagi untuk mengumpul lebih banyak bintang.";award="🌳"}
+ else{title="Jangan Putus Asa!";msg="Setiap percubaan ialah peluang untuk belajar. Baca semula nota dan cuba sekali lagi.";award="🐰"}
+ $("resultTitle").textContent=title;$("resultText").textContent=msg;$("award").textContent=award;
+ $("review").innerHTML="<strong>Semakan cabaran:</strong><br>"+answersLog.map((x,i)=>`${i+1}. ${x.ok?"⭐ Betul":"📘 Jawapan: "+escapeHtml(x.correct)}`).join("<br>");
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("startBtn").addEventListener("click",start);$("nextBtn").addEventListener("click",next);$("againBtn").addEventListener("click",start);
+</script>
+</body>
+</html>
